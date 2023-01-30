@@ -1,0 +1,97 @@
+/* body {
+  background-image: url("bg2.jpg");
+ } */
+
+hr{
+  height: 3px;
+  background: rgb(159, 236, 235);
+}
+.new-bid{
+    width: 30%;
+    border-width: thin;
+    padding: 4px;
+    border-radius: 5px;
+}
+
+.bid-display{
+    margin: 30px;
+}
+
+.newbid-container{
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+}
+
+#parent-div{
+    display: flex;
+    
+    justify-content: center;
+
+}
+
+.skills{
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px; 
+}
+
+.newbid-div{
+    align-items: center;
+}
+
+.reset-container{
+    margin: 10px;
+    display: flex;
+  align-items: flex-end;
+  justify-content: right; 
+
+}
+
+#footer-link{
+  color: rgb(63, 252, 242);
+}
+
+#player-name2{
+  font-size: 50px;
+  font-family: "Comic Sans MS, Comic Sans, cursive";
+}
+
+.currentBidHeader{
+  font-family:"Snell Roundhand, cursive";
+}
+
+.center-cropped {
+  object-fit: cover;
+  background-repeat: no-repeat;
+}
+
+.footer-align {
+  position:absolute;                 
+  bottom:0;
+  width: 100%;                         
+  left:0;                         
+}
+#goto-next-bid{
+   margin: 150px;
+   padding: 5px;
+}
+
+#left-column-1{
+  border-radius: 2%;
+  color: #00ffbf;
+}
+
+#right-column-1{
+  border-radius: 2%;
+}
+
+#img-container{
+  border-radius: 2%;
+}
+
+#player-image{
+  border-radius: 2%;
+}
