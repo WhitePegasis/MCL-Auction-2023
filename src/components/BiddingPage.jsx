@@ -22,6 +22,7 @@ const AllEligiblePlayers = () => {
 
     let playerIdx=0;
     let teamIdx = -1;
+    let biddingStarted = false;
 
     const [players, setPlayers] = useState([]);
     const [teams, setTeams] = useState([]);
@@ -89,6 +90,8 @@ const AllEligiblePlayers = () => {
           wk.innerHTML = `${players[playerIdx].wk}`;
           playerImage.src= `${players[playerIdx].profilepic}`;
           //console.log("Image url: "+players[playerIdx].profilePic);
+
+          biddingStarted = true;
         }
     }
 
@@ -153,89 +156,119 @@ const AllEligiblePlayers = () => {
 
 
       const submitButtonClick = async ()=>{
+        const playersCount = players.length;
+
         if(!window.navigator.onLine){
           alert('Abe internet chala gya!');
         }
-        else if(teamIdx < 0){
-          alert("Cant submit the bidding data!");
+        else if(!biddingStarted){
+          alert("Click on the start-bidding button to start the bidding!");
         }
+        // else if(teamIdx < 0){
+        //   alert("Cant submit the bidding data!");
+        // }
         else if(window.confirm("Are you sure you want to submit?")){
 
           loadingIcon.style.display = 'block';
-          try {
-            
-            const newTeamValue = {
-              name: '',
-              pointsused: 0,
-            }
 
-            let newPlayervalue = {
-              name: '',
-              dept: '',
-              year: '',
-              speciality: '',
-              wk: '',
-              registered: '',
-              soldto: ''
-            }
+          let newPlayervalue = {
+            name: '',
+            dept: '',
+            year: '',
+            speciality: '',
+            wk: '',
+            registered: '',
+            soldto: ''
+          }
 
-            const soldPlayerDetails = {
-                  name: '',
-                  dept: '',
-                  year: '',
-                  speciality: '',
-                  wk: '',
-                  point: 0,
-                  contact:'',
-                  email:'',
-            }
+          const soldPlayerDetails = {
+            name: '',
+            dept: '',
+            year: '',
+            speciality: '',
+            wk: '',
+            point: 0,
+            contact:'',
+            email:'',
+          }
 
-            const pointsUsed = parseInt(bidValue.innerHTML);
-            soldPlayerDetails.id = players[playerIdx].id;
-            soldPlayerDetails.name = players[playerIdx].name;
-            soldPlayerDetails.dept = players[playerIdx].dept;
-            soldPlayerDetails.year = players[playerIdx].year;
-            soldPlayerDetails.speciality = players[playerIdx].speciality;
-            soldPlayerDetails.wk = players[playerIdx].wk;
-            soldPlayerDetails.point = parseInt(pointsUsed);
-            soldPlayerDetails.contact = players[playerIdx].contact;
-            soldPlayerDetails.email = players[playerIdx].email;
-            
-            newTeamValue.name= teams[teamIdx].name;
-            newTeamValue.pointsused=teams[teamIdx].pointsused + pointsUsed;
+          const pointsUsed = parseInt(bidValue.innerHTML);
+          soldPlayerDetails.id = players[playerIdx].id;
+          soldPlayerDetails.name = players[playerIdx].name;
+          soldPlayerDetails.dept = players[playerIdx].dept;
+          soldPlayerDetails.year = players[playerIdx].year;
+          soldPlayerDetails.speciality = players[playerIdx].speciality;
+          soldPlayerDetails.wk = players[playerIdx].wk;
+          soldPlayerDetails.point = parseInt(pointsUsed);
+          soldPlayerDetails.contact = players[playerIdx].contact;
+          soldPlayerDetails.email = players[playerIdx].email;
 
-            
-            
-            await editTeamPoints(newTeamValue).then((res)=>{
-              console.log("Team updated: ", newTeamValue);
-            });
-
-            await editTeamPlayerList(newTeamValue.name, soldPlayerDetails).then((res)=>{
-              console.log(newTeamValue.name," playerlist updated: ", soldPlayerDetails);
-            });
-
+          if(bidderName.innerText === 'Unsold'){
 
             newPlayervalue = soldPlayerDetails;
-            newPlayervalue.soldto = newTeamValue.name;
+              newPlayervalue.soldto = 'unsold';
+  
+              await addLogs(newPlayervalue).then((res)=>{
+                console.log("logs updated!");
+             });
+  
+             await editPlayer(newPlayervalue).then((res)=>{
+              console.log("Player Sold: ", newPlayervalue);
+             });
+              
+              alert(newPlayervalue.name + " unsold :(");
+              window.location.reload(false);
 
-            await addLogs(newPlayervalue).then((res)=>{
-              console.log("logs updated!");
-           });
-
-           await editPlayer(newPlayervalue).then((res)=>{
-            console.log("Player Sold: ", newPlayervalue);
-           });
-            
-            alert(newPlayervalue.name + " got sold to "+ newTeamValue.name+ " for "+ pointsUsed);
-
-            window.location.reload(false);
-
-          } catch (error) {
-            loadingIcon.style.display = 'none';
-
-            alert("Unable to submit, Abe internet chala gya!")
-            console.log("Error in submitButtonClick: ",error);
           }
+          else{
+
+            try {
+            
+              const newTeamValue = {
+                name: '',
+                pointsused: 0,
+              }
+              
+              
+              newTeamValue.name= teams[teamIdx].name;
+              newTeamValue.pointsused=teams[teamIdx].pointsused + pointsUsed;
+  
+              
+              
+              await editTeamPoints(newTeamValue).then((res)=>{
+                console.log("Team updated: ", newTeamValue);
+              });
+  
+              await editTeamPlayerList(newTeamValue.name, soldPlayerDetails).then((res)=>{
+                console.log(newTeamValue.name," playerlist updated: ", soldPlayerDetails);
+              });
+  
+  
+              newPlayervalue = soldPlayerDetails;
+              newPlayervalue.soldto = newTeamValue.name;
+  
+              await addLogs(newPlayervalue).then((res)=>{
+                console.log("logs updated!");
+             });
+  
+             await editPlayer(newPlayervalue).then((res)=>{
+              console.log("Player Sold: ", newPlayervalue);
+             });
+              
+              alert(newPlayervalue.name + " got sold to "+ newTeamValue.name+ " for "+ pointsUsed);
+  
+              window.location.reload(false);
+  
+            } catch (error) {
+              loadingIcon.style.display = 'none';
+  
+              alert("Unable to submit, Abe internet chala gya!")
+              console.log("Error in submitButtonClick: ",error);
+            }
+
+          }
+
+          
         }
       }
 
@@ -313,19 +346,19 @@ const AllEligiblePlayers = () => {
                 <div className="w3-twothird" id="right-column">
                 <div className="w3-container w3-card w3-margin-bottom" id='right-column-1'>
                 <b id='right-column-player-name'>
-                    <h2 className=" w3-padding-16 " id="player-name2">
+                    <h2 className=" w3-padding-16 " id="player-name2" style={{fontFamily: 'Signika Negative'}}>
                     <i className="fa fa-user fa-fw w3-margin-right w3-xxlarge" />
                     Player Name</h2>
                 </b>
                 <hr />
                 <div className="w3-container">
-                    <h3 className="w3-opacity currentBidHeader"><b>CURRENT BID</b></h3>
+                    <h3 className="w3-opacity currentBidHeader" style={{fontFamily: 'Nunito'}}><b>CURRENT BID</b></h3>
                     <h1 className="bid-display" ><i className="fa fa-calendar fa-fw w3-margin-right" />
                     <span className="w3-tag w3-round " id="bid-value">0000</span></h1> 
                     <hr />
                 </div>
                 <div className="w3-container">
-                    <h4 className="w3-opacity currentBidHeader"><b>BIDDING TEAM</b></h4>
+                    <h3 className="w3-opacity currentBidHeader" style={{fontFamily: 'Nunito'}}><b>BIDDING TEAM</b></h3>
                     <h1 className=" bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
                     <b><span id="bidder-name">Unsold</span></b></h1>
                     <hr />
