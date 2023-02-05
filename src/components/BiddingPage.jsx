@@ -8,6 +8,18 @@ const teamNames=["RR","CSK","KKR","DC","RCB","SRH","GT"];
 
 const AllEligiblePlayers = () => {
 
+  window.addEventListener("offline", function() {
+    alert("Abe internet chala gya!");
+    this.document.getElementById('onlineIcon').style.color='red';
+  });
+  window.addEventListener("online", function() {
+    this.document.getElementById('onlineIcon').style.color='white';
+  });
+
+  // if(!window.navigator.onLine){
+  //   alert('Abe internet chala gya!');
+  // }
+
     let playerIdx=0;
     let teamIdx = -1;
 
@@ -49,7 +61,10 @@ const AllEligiblePlayers = () => {
 
         const playersCount = players.length;
         
-        if(playersCount === 0){
+        if(!window.navigator.onLine){
+          alert('Abe internet chala gya!');
+        }
+        else if(playersCount === 0){
           alert("No more players");
         }
         else if(window.confirm('Do you want to start the bidding?')){
@@ -84,6 +99,7 @@ const AllEligiblePlayers = () => {
         const bidderName=document.getElementById("bidder-name");
         const newBidValue=document.getElementById("new-bid-value");
         const newBidderName=document.getElementById("new-bidder-name");
+        const loadingIcon = document.getElementById("loadingIcon");
 
         // on update button click
         //let bidderIndex=0;
@@ -137,10 +153,15 @@ const AllEligiblePlayers = () => {
 
 
       const submitButtonClick = async ()=>{
-        if(teamIdx < 0){
-          alert("Update the bidding data before submit!");
+        if(!window.navigator.onLine){
+          alert('Abe internet chala gya!');
+        }
+        else if(teamIdx < 0){
+          alert("Cant submit the bidding data!");
         }
         else if(window.confirm("Are you sure you want to submit?")){
+
+          loadingIcon.style.display = 'block';
           try {
             
             const newTeamValue = {
@@ -210,6 +231,9 @@ const AllEligiblePlayers = () => {
             window.location.reload(false);
 
           } catch (error) {
+            loadingIcon.style.display = 'none';
+
+            alert("Unable to submit, Abe internet chala gya!")
             console.log("Error in submitButtonClick: ",error);
           }
         }
@@ -217,33 +241,28 @@ const AllEligiblePlayers = () => {
 
     return (
 
-        <div>
+        <div style={{backgroundColor:'rgb(205, 224, 231)'}}>
 
             {/*Navbar */}
-      <nav className="mb-1 navbar navbar-expand-lg navbar-dark default-color" id="nav">
+      <nav className="mb-1 navbar navbar-expand " id="nav" style={{backgroundColor:'rgb(63, 94, 197)', color:'white'}}>
         
         <div className="collapse navbar-collapse" id="navbarSupportedContent-333">
           <ul className="navbar-nav mr-auto">
-            <li className="nav-item active">
-              <a className="nav-link" href="#" id="start" onClick={() => clickedStartBtn()}>Start Bidding
+            <li className="nav-item active" style={{backgroundColor:'rgb(63, 80, 190)'}}>
+              <a className="nav-link" href="#" id="start" onClick={() => clickedStartBtn()} style={{color:'white'}}>Start Bidding
                 {/* <span class="sr-only">(current)</span>  */}
               </a>
             </li>
           </ul>
           <ul className="navbar-nav ml-auto nav-flex-icons">
-            <li className="nav-item">
-              <a className="nav-link waves-effect waves-light">
-                <i className="fab fa-twitter" />
-              </a>
-            </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <a className="nav-link waves-effect waves-light">
                 <i className="fab fa-google-plus-g" />
               </a>
-            </li>
+            </li> */}
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i className="fas fa-user" />
+                <i className="fas fa-user" id='onlineIcon'/>
               </a>
               <div className="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
                 <a className="dropdown-item" href="https://www.instagram.com/white_pegasus_/?hl=en">Creator</a>
@@ -257,32 +276,32 @@ const AllEligiblePlayers = () => {
 
 
             <div className="w3-content w3-margin-top" style={{maxWidth: '1400px'}}>
-        <div className="w3-row-padding" id="parent-div" style={{marginTop: '60px'}}>
+        <div className="w3-row-padding" id="parent-div" style={{marginTop: '40px'}}>
           <div id="sold-div" style={{display: 'none', padding: '100px'}}>
             <h2 id="sold-detail"><span id="sold-player-name">Player Name</span> sold to <span id="sold-player-team">teamname</span> by <span id="sold player bid">bid</span> points</h2> 
             <button id="goto-next-bid">Go to Next Bid</button>
           </div>
           {/* Left Column */}
-          <div className="w3-third" id="left-column">
+          <div className="w3-third" id="left-column" style={{width: '700px'}}>
             <div className="w3-white w3-text-grey w3-card-4" id="left-column-1">
               <div className="w3-display-container" id='img-container'>
-                <img className="center-cropped" src="default-image.png" onError="onErrorFunc()" style={{width: '100%', height: '400px'}} alt="Avatar" id="player-image"/>
+                <img className="center-cropped" src="default-player-image.jpg" onError="onErrorFunc()" style={{width: '100%', height: '500px'}} alt="Avatar" id="player-image"/>
                 <div className="w3-display-bottomleft w3-container w3-text-black">
                   {/* <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2> */}
-                  <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2>
+                  <h2 id="player-name1">Player Name</h2>
                 </div>
               </div>
               <div className="w3-container mt-3">
-                <h5><i className="fa fa-briefcase fa-fw w3-margin-right w3-large w3-text-teal" /><b>Department: </b><span id="dept">XYZ</span></h5>
-                <h5><i className="fa fa-home fa-fw w3-margin-right w3-large w3-text-teal" />
+                <h5><i className="fa fa-briefcase fa-fw w3-margin-right w3-large" /><b>Department: </b><span id="dept">XYZ</span></h5>
+                <h5><i className="fa fa-home fa-fw w3-margin-right w3-large" />
                   <b>Year: </b><span id="year">000</span></h5>
                 <hr />
-                <p className="w3-large"><b><i className="fa fa-asterisk fa-fw w3-margin-right w3-text-teal" />Skills</b></p>
+                {/* <p className="w3-large"><b><i className="fa fa-asterisk fa-fw w3-margin-right" />Skills</b></p> */}
                 <div id="skill-div">
-                  <b><p className="skills w3-teal" id="speciality"> Speciality </p></b>
+                  <b><p className="skills " id="speciality"> Speciality </p></b>
                 </div>
                 <div id="skill-wk">
-                  <b><p className="mt-3 skills w3-teal">Wicket Keeper: <span id='wk'></span></p></b>
+                  <b><p className="mt-3 skills">Wicket Keeper: <span id='wk'></span></p></b>
                 </div>
                 <br />
               </div>
@@ -292,22 +311,22 @@ const AllEligiblePlayers = () => {
 
             {/* Right Column */}
                 <div className="w3-twothird" id="right-column">
-                <div className="w3-container w3-card w3-white w3-margin-bottom" id='right-column-1'>
-                <b>
-                    <h2 className="w3-text-grey w3-padding-16 " id="player-name2">
-                    <i className="fa fa-user fa-fw w3-margin-right w3-xxlarge w3-text-teal" />
+                <div className="w3-container w3-card w3-margin-bottom" id='right-column-1'>
+                <b id='right-column-player-name'>
+                    <h2 className=" w3-padding-16 " id="player-name2">
+                    <i className="fa fa-user fa-fw w3-margin-right w3-xxlarge" />
                     Player Name</h2>
                 </b>
                 <hr />
                 <div className="w3-container">
-                    <h4 className="w3-opacity currentBidHeader"><b>Current Bid</b></h4>
-                    <h1 className="w3-text-teal bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
-                    <span className="w3-tag w3-teal w3-round " id="bid-value">0000</span></h1> 
+                    <h3 className="w3-opacity currentBidHeader"><b>CURRENT BID</b></h3>
+                    <h1 className="bid-display" ><i className="fa fa-calendar fa-fw w3-margin-right" />
+                    <span className="w3-tag w3-round " id="bid-value">0000</span></h1> 
                     <hr />
                 </div>
                 <div className="w3-container">
-                    <h4 className="w3-opacity currentBidHeader"><b>Bidding Team</b></h4>
-                    <h1 className="w3-text-teal bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
+                    <h4 className="w3-opacity currentBidHeader"><b>BIDDING TEAM</b></h4>
+                    <h1 className=" bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
                     <b><span id="bidder-name">Unsold</span></b></h1>
                     <hr />
                 </div>
@@ -334,53 +353,13 @@ const AllEligiblePlayers = () => {
                 </div>
                 </div>
                 <div className="w3-twothird">
-                <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-primary btn-rounded">Submit</button>
+                <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-rounded" style={{backgroundColor:'rgb(81, 9, 182)', color:'white'}}><i class="fa fa-spinner fa-spin" id='loadingIcon' style={{display:'none'}}></i> Submit</button>
                 </div>
                 {/* End Right Column */}
             </div>
           </div>
         </div>
         </div>
-        
-        // <div>
-        //     <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        //         <Grid item xs={6}>
-        //             <div className="w3-third" id="left-column">
-        //             <div className="w3-white w3-text-grey w3-card-4">
-        //             <div className="w3-display-container">
-        //                 <img className="center-cropped" src="default-image.png" style={{width: '100%', height: '400px'}} alt="Avatar" id="player-image" onerror="this.src=image-not-found.jpg" />
-        //                 <div className="w3-display-bottomleft w3-container w3-text-black">
-        //                 <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2>
-        //                 </div>
-        //             </div>
-        //             <div className="w3-container mt-3">
-        //                 <h5><i className="fa fa-briefcase fa-fw w3-margin-right w3-large w3-text-teal" /><b>Department: </b><span id="dept">XYZ</span></h5>
-        //                 <h5><i className="fa fa-home fa-fw w3-margin-right w3-large w3-text-teal" />
-        //                 <b>Year: </b><span id="year">000</span></h5>
-        //                 <hr />
-        //                 <p className="w3-large"><b><i className="fa fa-asterisk fa-fw w3-margin-right w3-text-teal" />Skills</b></p>
-        //                 <div id="skill-div">
-        //                 <p className="skills w3-teal" id="speciality">Speciality</p>
-        //                 </div>
-        //                 <div id="skill-wk">
-        //                 <p className="mt-3 skills w3-teal">Wicket Keeper</p>
-        //                 </div>
-        //                 <br />
-        //             </div>
-        //             </div><br />
-        //             </div>
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             <div>2</div>
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             <div>3</div>
-        //         </Grid>
-        //         <Grid item xs={6}>
-        //             <div>4</div>
-        //         </Grid>
-        //         </Grid>
-        // </div>
       );
 }
 

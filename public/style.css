@@ -14,7 +14,7 @@ hr{
 }
 
 .bid-display{
-    margin: 30px;
+    margin: 20px;
 }
 
 .newbid-container{
@@ -95,3 +95,57 @@ hr{
 #player-image{
   border-radius: 2%;
 }
+
+#speciality{
+  background-color: rgb(63, 94, 197);
+  color: white;
+}
+
+#bid-value{
+  background-color: rgb(4, 8, 21);
+  color: white;
+}
+
+
+
+hr{
+  background-color: rgb(229, 244, 66);
+}
+
+button{
+  background-color: rgb(81, 9, 182);
+  color: black;
+}
+
+#skill-wk{
+  background-color:rgb(63, 94, 197);
+  color: white;
+}
+
+#player-name1{
+  background-color: rgba(215, 232, 250, 0.771);
+  padding: 5px;
+  border-radius: 2px;
+}
+
+#right-column-player-name{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+
+  background-color: rgba(215, 232, 250, 0.771);
+  margin-top: 15px;
+  border-radius: 2px;
+}
+
+#right-column-1{
+  background-color: white;
+}
+
+#colortest{
+  background-color: rgb(205, 224, 231);
+}
+
+
+
