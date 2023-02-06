@@ -2,6 +2,7 @@
   background-image: url("bg2.jpg");
  } */
 
+ 
 hr{
   height: 3px;
   background: rgb(159, 236, 235);
@@ -144,7 +145,7 @@ button{
 }
 
 #colortest{
-  background-color: rgb(205, 224, 231);
+  background-color: rgb(4, 2, 21);
 }
 
 

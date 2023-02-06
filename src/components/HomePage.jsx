@@ -24,10 +24,11 @@ const HomePage = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundImage: "url(bggif.gif)",
+            // backgroundImage: "url(bggif.gif)",
+            backgroundColor:'rgb(4, 2, 21)',
             backgroundSize: "cover",
         }}>
-            <Image src={homepageimg}/>
+            <Image src={homepageimg} style={{height:'750px'}}/>
         </div>
         
     )

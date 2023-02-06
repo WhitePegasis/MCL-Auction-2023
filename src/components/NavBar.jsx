@@ -20,6 +20,19 @@ const NavBar = () => {
                 <Tabs to="./" exact><b>MCL</b></Tabs>
                 <Tabs to="all" exact>All Players</Tabs>
                 <Tabs to="eligible" exact>Bidding Page</Tabs>
+
+                <ul className="navbar-nav ml-auto nav-flex-icons">
+                    <li className="nav-item dropdown">
+                      <a className="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i className="fas fa-user"/>
+                      </a>
+                      <div className="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
+                        <a className="dropdown-item" href="https://docs.google.com/spreadsheets/d/1GqJfbPYwLsAPW3XKSOgCLZy5QXeci-0IG331Ak34rNc/edit#gid=0" target={'_blank'} rel="noreferrer" >Database</a>
+                        <a className="dropdown-item" href="https://www.instagram.com/white_pegasus_/?hl=en" target={'_blank'} rel="noreferrer" >Creator</a>
+                        <a className="dropdown-item" href="https://www.instagram.com/mcl_msit/" target={'_blank'} rel="noreferrer" >Contact Us</a>
+                      </div>
+                    </li>
+                  </ul>
             </Toolbar>
         </Header>
     )

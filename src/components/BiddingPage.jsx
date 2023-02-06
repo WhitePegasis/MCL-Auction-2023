@@ -9,7 +9,6 @@ const teamNames=["RR","CSK","KKR","DC","RCB","SRH","GT"];
 const AllEligiblePlayers = () => {
 
   window.addEventListener("offline", function() {
-    alert("Abe internet chala gya!");
     this.document.getElementById('onlineIcon').style.color='red';
   });
   window.addEventListener("online", function() {
@@ -156,7 +155,6 @@ const AllEligiblePlayers = () => {
 
 
       const submitButtonClick = async ()=>{
-        const playersCount = players.length;
 
         if(!window.navigator.onLine){
           alert('Abe internet chala gya!');
@@ -276,122 +274,120 @@ const AllEligiblePlayers = () => {
 
         <div style={{backgroundColor:'rgb(205, 224, 231)'}}>
 
+
             {/*Navbar */}
-      <nav className="mb-1 navbar navbar-expand " id="nav" style={{backgroundColor:'rgb(63, 94, 197)', color:'white'}}>
-        
-        <div className="collapse navbar-collapse" id="navbarSupportedContent-333">
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item active" style={{backgroundColor:'rgb(63, 80, 190)'}}>
-              <a className="nav-link" href="#" id="start" onClick={() => clickedStartBtn()} style={{color:'white'}}>Start Bidding
-                {/* <span class="sr-only">(current)</span>  */}
-              </a>
-            </li>
-          </ul>
-          <ul className="navbar-nav ml-auto nav-flex-icons">
-            {/* <li className="nav-item">
-              <a className="nav-link waves-effect waves-light">
-                <i className="fab fa-google-plus-g" />
-              </a>
-            </li> */}
-            <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i className="fas fa-user" id='onlineIcon'/>
-              </a>
-              <div className="dropdown-menu dropdown-menu-right dropdown-default" aria-labelledby="navbarDropdownMenuLink-333">
-                <a className="dropdown-item" href="https://www.instagram.com/white_pegasus_/?hl=en">Creator</a>
-                <a className="dropdown-item" href="https://www.instagram.com/mcl_msit/">Contact Us</a>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      {/*/.Navbar */}
+              <nav className="mb-1 navbar navbar-expand " id="nav" style={{backgroundColor:'rgb(63, 94, 197)', color:'white'}}>
+                
+                <div className="collapse navbar-collapse" id="navbarSupportedContent-333">
+                  <ul className="navbar-nav mr-auto">
+                    <li className="nav-item active" style={{backgroundColor:'rgb(63, 80, 190)'}}>
+                      <a className="nav-link" href="#" id="start" onClick={() => clickedStartBtn()} style={{color:'white'}}>Start Bidding
+                        {/* <span class="sr-only">(current)</span>  */}
+                      </a>
+                    </li>
+                  </ul>
+                  <ul className="navbar-nav ml-auto nav-flex-icons">
+                    <li className="nav-item">
+                      <a className="nav-link " id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fab fa-google-plus-g" id='onlineIcon'></i>
+                      </a>
+                    </li>
+                  </ul>
+                </div> 
+              </nav>
+              {/*/.Navbar */}
 
 
             <div className="w3-content w3-margin-top" style={{maxWidth: '1400px'}}>
-        <div className="w3-row-padding" id="parent-div" style={{marginTop: '40px'}}>
-          <div id="sold-div" style={{display: 'none', padding: '100px'}}>
-            <h2 id="sold-detail"><span id="sold-player-name">Player Name</span> sold to <span id="sold-player-team">teamname</span> by <span id="sold player bid">bid</span> points</h2> 
-            <button id="goto-next-bid">Go to Next Bid</button>
-          </div>
-          {/* Left Column */}
-          <div className="w3-third" id="left-column" style={{width: '700px'}}>
-            <div className="w3-white w3-text-grey w3-card-4" id="left-column-1">
-              <div className="w3-display-container" id='img-container'>
-                <img className="center-cropped" src="default-player-image.jpg" onError="onErrorFunc()" style={{width: '100%', height: '500px'}} alt="Avatar" id="player-image"/>
-                <div className="w3-display-bottomleft w3-container w3-text-black">
-                  {/* <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2> */}
-                  <h2 id="player-name1">Player Name</h2>
+              <div className="w3-row-padding" id="parent-div" style={{marginTop: '40px'}}>
+                <div id="sold-div" style={{display: 'none', padding: '100px'}}>
+                  <h2 id="sold-detail"><span id="sold-player-name">Player Name</span> sold to <span id="sold-player-team">teamname</span> by <span id="sold player bid">bid</span> points</h2> 
+                  <button id="goto-next-bid">Go to Next Bid</button>
                 </div>
-              </div>
-              <div className="w3-container mt-3">
-                <h5><i className="fa fa-briefcase fa-fw w3-margin-right w3-large" /><b>Department: </b><span id="dept">XYZ</span></h5>
-                <h5><i className="fa fa-home fa-fw w3-margin-right w3-large" />
-                  <b>Year: </b><span id="year">000</span></h5>
-                <hr />
-                {/* <p className="w3-large"><b><i className="fa fa-asterisk fa-fw w3-margin-right" />Skills</b></p> */}
-                <div id="skill-div">
-                  <b><p className="skills " id="speciality"> Speciality </p></b>
-                </div>
-                <div id="skill-wk">
-                  <b><p className="mt-3 skills">Wicket Keeper: <span id='wk'></span></p></b>
-                </div>
-                <br />
-              </div>
-            </div><br />
-            {/* End Left Column */}
-            </div>
 
-            {/* Right Column */}
-                <div className="w3-twothird" id="right-column">
-                <div className="w3-container w3-card w3-margin-bottom" id='right-column-1'>
-                <b id='right-column-player-name'>
-                    <h2 className=" w3-padding-16 " id="player-name2" style={{fontFamily: 'Signika Negative'}}>
-                    <i className="fa fa-user fa-fw w3-margin-right w3-xxlarge" />
-                    Player Name</h2>
-                </b>
-                <hr />
-                <div className="w3-container">
-                    <h3 className="w3-opacity currentBidHeader" style={{fontFamily: 'Nunito'}}><b>CURRENT BID</b></h3>
-                    <h1 className="bid-display" ><i className="fa fa-calendar fa-fw w3-margin-right" />
-                    <span className="w3-tag w3-round " id="bid-value">0000</span></h1> 
-                    <hr />
-                </div>
-                <div className="w3-container">
-                    <h3 className="w3-opacity currentBidHeader" style={{fontFamily: 'Nunito'}}><b>BIDDING TEAM</b></h3>
-                    <h1 className=" bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
-                    <b><span id="bidder-name">Unsold</span></b></h1>
-                    <hr />
-                </div>
-                <div className="newbid-container">
-                    <div className="newbid-div">
-                    <input className="new-bid mr-3" id="new-bid-value" type="number" placeholder="Bid Amount" aria-label="New Bid" style={{width: '20%'}} />
-                    <select name="languages" id="new-bidder-name" style={{padding: '8px'}}>
-                        <option value="select">Select Bidder Name</option>
-                        <option value={0}>RR</option>
-                        <option value={1}>CSK</option>
-                        <option value={2}>KKR</option>
-                        <option value={3}>DC</option>
-                        <option value={4}>RCB</option>
-                        <option value={5}>SRH</option>
-                        <option value={6}>GT</option>
-                    </select>
-                    <button id="bid-button" onClick={bidButtonClick} className="btn btn-outline-primary ml-5" type="button" data-mdb-ripple-color="dark" style={{padding: '10px', paddingLeft: '20px', paddingRight: '20px'}}>
-                        Update
-                    </button>
+                {/* Left Column */}
+                <div className="w3-third" id="left-column" style={{width: '700px'}}>
+                  <div className="w3-white w3-text-grey w3-card-4" id="left-column-1">
+                    <div className="w3-display-container" id='img-container'>
+                      <img className="center-cropped" src="default-player-image.jpg" onError="onErrorFunc()" style={{width: '100%', height: '500px'}} alt="Avatar" id="player-image"/>
+                      <div className="w3-display-bottomleft w3-container w3-text-black">
+                        {/* <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2> */}
+                        <h2 id="player-name1">Player Name</h2>
+                      </div>
                     </div>
+                    <div className="w3-container mt-3">
+                      <h5><i className="fa fa-briefcase fa-fw w3-margin-right w3-large" /><b>Department: </b><span id="dept">XYZ</span></h5>
+                      <h5><i className="fa fa-home fa-fw w3-margin-right w3-large" />
+                        <b>Year: </b><span id="year">000</span></h5>
+                      <hr />
+                      {/* <p className="w3-large"><b><i className="fa fa-asterisk fa-fw w3-margin-right" />Skills</b></p> */}
+                      <div id="skill-div">
+                        <b><p className="skills " id="speciality"> Speciality </p></b>
+                      </div>
+                      <div id="skill-wk">
+                        <b><p className="mt-3 skills">Wicket Keeper: <span id='wk'></span></p></b>
+                      </div>
+                      <br />
+                    </div>
+                  </div><br />
+                  {/* End Left Column */}
+                  </div>
+
+                  {/* Right Column */}
+                      <div className="w3-twothird" id="right-column">
+                      <div className="w3-container w3-card w3-margin-bottom" id='right-column-1'>
+                      <b id='right-column-player-name'>
+                          <h2 className=" w3-padding-16 " id="player-name2" style={{fontFamily: 'Signika Negative'}}>
+                          <i className="fa fa-user fa-fw w3-margin-right w3-xxlarge" />
+                          Player Name</h2>
+                      </b>
+                      <hr />
+                      <div className="w3-container">
+                          <h3 className="w3-opacity currentBidHeader" style={{fontFamily: 'Nunito'}}><b>CURRENT BID</b></h3>
+                          <h1 className="bid-display" ><i className="fa fa-calendar fa-fw w3-margin-right" />
+                          <span className="w3-tag w3-round " id="bid-value">0000</span></h1> 
+                          <hr />
+                      </div>
+                      <div className="w3-container">
+                          <h3 className="w3-opacity currentBidHeader" style={{fontFamily: 'Nunito'}}><b>BIDDING TEAM</b></h3>
+                          <h1 className=" bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
+                          <b><span id="bidder-name">Unsold</span></b></h1>
+                          <hr />
+                      </div>
+                      <div className="newbid-container">
+                          <div className="newbid-div">
+                          <input className="new-bid mr-3" id="new-bid-value" type="number" placeholder="Bid Amount" aria-label="New Bid" style={{width: '20%'}} />
+                          <select name="languages" id="new-bidder-name" style={{padding: '8px'}}>
+                              <option value="select">Select Bidder Name</option>
+                              <option value={0}>RR</option>
+                              <option value={1}>CSK</option>
+                              <option value={2}>KKR</option>
+                              <option value={3}>DC</option>
+                              <option value={4}>RCB</option>
+                              <option value={5}>SRH</option>
+                              <option value={6}>GT</option>
+                          </select>
+                          <button id="bid-button" onClick={bidButtonClick} className="btn btn-outline-primary ml-5" type="button" data-mdb-ripple-color="dark" style={{padding: '10px', paddingLeft: '20px', paddingRight: '20px'}}>
+                              Update
+                          </button>
+                          </div>
+                      </div>
+                      <div className="reset-container">
+                          <img src="reset.png" onClick={resetBtnClick} alt="Avatar" id="reset" height={40} width={40} style={{cursor: 'pointer'}} contextMenu="Reset" />
+                      </div>
+                      </div>
+                      <div className="w3-twothird">
+                      <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-rounded" style={{backgroundColor:'rgb(81, 9, 182)', color:'white'}}><i class="fa fa-spinner fa-spin" id='loadingIcon' style={{display:'none'}}></i> Submit</button>
+                      </div>
+                      {/* End Right Column */}
+                  </div>
                 </div>
-                <div className="reset-container">
-                    <img src="reset.png" onClick={resetBtnClick} alt="Avatar" id="reset" height={40} width={40} style={{cursor: 'pointer'}} contextMenu="Reset" />
-                </div>
-                </div>
-                <div className="w3-twothird">
-                <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-rounded" style={{backgroundColor:'rgb(81, 9, 182)', color:'white'}}><i class="fa fa-spinner fa-spin" id='loadingIcon' style={{display:'none'}}></i> Submit</button>
-                </div>
-                {/* End Right Column */}
-            </div>
-          </div>
         </div>
+
+        <footer class="w3-container w3-center w3-margin-top" id="footer" style={{backgroundColor:'rgb(63, 94, 197)'}}>
+            <p>MEGHNAD SAHA CRICKET LEAGUE</p>
+            <p>Powered by <a href="https://www.instagram.com/mcl_msit/" target="_blank" id="footer-link" rel="noreferrer" >MCL</a></p>
+      </footer>
         </div>
       );
 }
