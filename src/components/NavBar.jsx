@@ -17,9 +17,9 @@ const NavBar = () => {
     return (
         <Header position="static">
             <Toolbar>
-                <Tabs to="./" exact><b>MCL</b></Tabs>
-                <Tabs to="all" exact>All Players</Tabs>
-                <Tabs to="eligible" exact>Bidding Page</Tabs>
+                <Tabs to="./" exact="true"><b>MCL</b></Tabs>
+                <Tabs to="all" exact="true">All Players</Tabs>
+                <Tabs to="eligible" exact="true">Bidding Page</Tabs>
 
                 <ul className="navbar-nav ml-auto nav-flex-icons">
                     <li className="nav-item dropdown">

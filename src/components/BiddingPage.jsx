@@ -289,7 +289,7 @@ const AllEligiblePlayers = () => {
                   <ul className="navbar-nav ml-auto nav-flex-icons">
                     <li className="nav-item">
                       <a className="nav-link " id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fab fa-google-plus-g" id='onlineIcon'></i>
+                        <i className="fab fa-google-plus-g" id='onlineIcon'></i>
                       </a>
                     </li>
                   </ul>
@@ -309,7 +309,7 @@ const AllEligiblePlayers = () => {
                 <div className="w3-third" id="left-column" style={{width: '700px'}}>
                   <div className="w3-white w3-text-grey w3-card-4" id="left-column-1">
                     <div className="w3-display-container" id='img-container'>
-                      <img className="center-cropped" src="default-player-image.jpg" onError="onErrorFunc()" style={{width: '100%', height: '500px'}} alt="Avatar" id="player-image"/>
+                      <img className="center-cropped" src="default-player-image.jpg" style={{width: '100%', height: '500px'}} alt="Avatar" id="player-image"/>
                       <div className="w3-display-bottomleft w3-container w3-text-black">
                         {/* <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2> */}
                         <h2 id="player-name1">Player Name</h2>
@@ -377,14 +377,14 @@ const AllEligiblePlayers = () => {
                       </div>
                       </div>
                       <div className="w3-twothird">
-                      <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-rounded" style={{backgroundColor:'rgb(81, 9, 182)', color:'white'}}><i class="fa fa-spinner fa-spin" id='loadingIcon' style={{display:'none'}}></i> Submit</button>
+                      <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-rounded" style={{backgroundColor:'rgb(81, 9, 182)', color:'white'}}><i className="fa fa-spinner fa-spin" id='loadingIcon' style={{display:'none'}}></i> Submit</button>
                       </div>
                       {/* End Right Column */}
                   </div>
                 </div>
         </div>
 
-        <footer class="w3-container w3-center w3-margin-top" id="footer" style={{backgroundColor:'rgb(63, 94, 197)'}}>
+        <footer className="w3-container w3-center w3-margin-top" id="footer" style={{backgroundColor:'rgb(63, 94, 197)'}}>
             <p>MEGHNAD SAHA CRICKET LEAGUE</p>
             <p>Powered by <a href="https://www.instagram.com/mcl_msit/" target="_blank" id="footer-link" rel="noreferrer" >MCL</a></p>
       </footer>
