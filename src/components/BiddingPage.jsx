@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { getPlayers, getTeams, editTeamPoints, editTeamPlayerList ,editPlayer, addLogs} from '../api/api';
 
-const maxPoint = 2000;
+const maxPoint = 2100;
 const teamNames=["RR","CSK","KKR","DC","RCB","SRH","GT"];
 
 
