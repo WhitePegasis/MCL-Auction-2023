@@ -3,7 +3,6 @@ import axios from 'axios';
 const baseURL = 'https://script.google.com/macros/s/AKfycbwPRSI1ciQYvptbmTbLDRC2t4DeUaBvReBFHbez9vHAssiLZ9WgOydiiNGZ5rWGsuio/exec';
 
 export const getPlayers = async (type) => {
-
     return await axios.get(baseURL,{params: { requestType: type } });
 }
 
