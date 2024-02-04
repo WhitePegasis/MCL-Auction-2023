@@ -1,3 +1,6 @@
+![Screenshot 2024-02-04 183501](https://github.com/WhitePegasis/MCL-Auction-2023/assets/87258007/2fcd9274-fe10-4942-9e52-7b129fcf4469)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
