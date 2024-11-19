@@ -1,5 +1,6 @@
 ![Screenshot 2024-02-04 183501](https://github.com/WhitePegasis/MCL-Auction-2023/assets/87258007/2fcd9274-fe10-4942-9e52-7b129fcf4469)
 
+![image](https://github.com/user-attachments/assets/123abdcf-ac4d-405d-add8-fcb55bbcf200)
 
 # Getting Started with Create React App
 
