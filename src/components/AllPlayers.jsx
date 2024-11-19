@@ -1,76 +1,50 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { Table, TableHead, TableCell,  TableRow, TableBody, styled } from '@mui/material'
+import React, { useState, useEffect } from 'react';
 import { getPlayers } from '../api/api';
 
-const StyledTable = styled(Table)`
-    width: 90%;
-    margin: 50px 0 0 50px;
-`;
-
-const THead = styled(TableRow)`
-    & > th {
-        font-size: 20px;
-        background: #000000;
-        color: #FFFFFF;
-    }
-`;
-
-const TRow = styled(TableRow)`
-    & > td{
-        font-size: 18px
-    }
-`;
-
 const AllPlayers = () => {
-    const [players, setPlayers] = useState([]);
-    
-    useEffect(() => {
-        getAllPlayers();
-    }, []);
+  const [players, setPlayers] = useState([]);
 
-    //getting all players detail from the sheet
-    const getAllPlayers = async () => {
+  useEffect(() => {
+    getAllPlayers();
+  }, []);
 
-        await getPlayers("players").then((response)=>{
-            setPlayers(response.data.data);
-        });
+  // Getting all players' details from the sheet
+  const getAllPlayers = async () => {
+    await getPlayers("players").then((response) => {
+      setPlayers(response.data.data);
+    });
+  };
 
-    }
-
-    return (
-        <StyledTable>
-            <TableHead>
-                <THead>
-                    <TableCell>Id</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Department</TableCell>
-                    <TableCell>Year</TableCell>
-                    <TableCell>Speciality</TableCell>
-                    <TableCell>WK</TableCell>              
-                    <TableCell>Sold To</TableCell>
-                </THead>
-            </TableHead>
-            <TableBody>
-                {players.map((player) => (
-                    <TRow key={player.id}>
-                        <TableCell>{player.id}</TableCell> {/* change it to user.id to use JSON Server */}
-                        <TableCell>{player.name}</TableCell>
-                        <TableCell>{player.dept}</TableCell>
-                        <TableCell>{player.year}</TableCell>
-                        <TableCell>{player.speciality}</TableCell>
-                        <TableCell>{player.wk}</TableCell>
-                        {/* <TableCell>{player.registered}</TableCell> */}
-                        <TableCell>{player.soldto}</TableCell>
-                        {/* <TableCell><a href={player.paymentProof} target="_blank">
-                                        <button>View</button>
-                                    </a>
-                        </TableCell> */}
-                    </TRow>
-                ))}
-            </TableBody>
-        </StyledTable>
-    )
-}
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full table-auto border-separate border-spacing-0">
+        <thead className="bg-black text-white">
+          <tr>
+            <th className="px-4 py-2 text-lg">Id</th>
+            <th className="px-4 py-2 text-lg">Name</th>
+            <th className="px-4 py-2 text-lg">Department</th>
+            <th className="px-4 py-2 text-lg">Year</th>
+            <th className="px-4 py-2 text-lg">Speciality</th>
+            <th className="px-4 py-2 text-lg">WK</th>
+            <th className="px-4 py-2 text-lg">Sold To</th>
+          </tr>
+        </thead>
+        <tbody>
+          {players.map((player) => (
+            <tr key={player.id} className="hover:bg-gray-100">
+              <td className="px-4 py-2 text-lg">{player.id}</td>
+              <td className="px-4 py-2 text-lg">{player.name}</td>
+              <td className="px-4 py-2 text-lg">{player.dept}</td>
+              <td className="px-4 py-2 text-lg">{player.year}</td>
+              <td className="px-4 py-2 text-lg">{player.speciality}</td>
+              <td className="px-4 py-2 text-lg">{player.wk}</td>
+              <td className="px-4 py-2 text-lg">{player.soldto}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export default AllPlayers;

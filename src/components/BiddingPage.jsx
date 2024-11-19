@@ -1,317 +1,259 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { getPlayers, getTeams, editTeamPoints, editTeamPlayerList, editPlayer, addLogs } from '../api/api';
-import { ThreeDots } from 'react-loader-spinner'
+import React from "react";
+import { useState, useEffect } from "react";
+import {
+  getPlayers,
+  getTeams,
+  editTeamPoints,
+  editTeamPlayerList,
+  editPlayer,
+  addLogs,
+} from "../api/api";
+import { ThreeDots } from "react-loader-spinner";
 
 const maxPoint = 2100;
 const teamNames = ["RR", "CSK", "KKR", "DC", "RCB", "SRH", "GT"];
 
-
 const AllEligiblePlayers = () => {
-
-  // if(!window.navigator.onLine){
-  //   alert('Abe internet chala gya!');
-  // }
-
-  let playerIdx = 0;
-  let teamIdx = -1;
-  let biddingStarted = false;
-
   const [players, setPlayers] = useState([]);
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [playerIdx, setPlayerIdx] = useState(null);
+  const [biddingStarted, setBiddingStarted] = useState(false);
+  const [bidValue, setBidValue] = useState(0);
+  const [bidderName, setBidderName] = useState("Unsold");
+  const [newBidValue, setNewBidValue] = useState("");
+  const [newBidderName, setNewBidderName] = useState("select");
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [selectedPlayerImage, setSelectedPlayerImage] = useState(null);
+
+  const [showBidResultModal, setShowBidResultModal] = useState(false);
+  const [bidResultMessage, setBidResultMessage] = useState("");
+
+  function convertLink(link1) {
+    // Extract the ID from the original link
+    const match = link1.match(/id=([\w-]+)/);
+    if (match) {
+      const fileId = match[1];
+      // Construct the new link using the extracted ID
+      const link2 = `https://lh3.googleusercontent.com/d/${fileId}?authuser=0`;
+      return link2;
+    } else {
+      return "Invalid link format";
+    }
+  }
+
   useEffect(() => {
+    const updateOnlineStatus = () => {
+      const onlineIcon = document.getElementById("onlineIcon");
+      if (onlineIcon) {
+        onlineIcon.style.color = navigator.onLine ? "white" : "red";
+      }
+    };
 
-    window.addEventListener("offline", function () {
-      console.log("offline")
-      this.document.getElementById('onlineIcon').style.color = 'red';
-    });
-    window.addEventListener("online", function () {
-      console.log("offline")
-      this.document.getElementById('onlineIcon').style.color = 'white';
-    });
+    window.addEventListener("offline", updateOnlineStatus);
+    window.addEventListener("online", updateOnlineStatus);
 
-    getAllPlayers()
-      .then(
-        getAllTeams()
-      )
-      .then(() => {
+    const fetchData = async () => {
+      try {
+        const playersResponse = await getPlayers("unsoldPlayers");
+        setPlayers(playersResponse.data.data);
+        console.log(playersResponse.data.data);
+
+        const teamsResponse = await getTeams();
+        setTeams(teamsResponse.data.data);
+        console.log(teamsResponse.data.data);
+
         setLoading(false);
-      });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        alert("Unable to fetch players or teams!");
+      }
+    };
 
+    fetchData();
+
+    return () => {
+      window.removeEventListener("offline", updateOnlineStatus);
+      window.removeEventListener("online", updateOnlineStatus);
+    };
   }, []);
 
-  const getAllPlayers = async () => {
-    try {
-
-      await getPlayers("unsoldPlayers").then((response) => {
-        setPlayers(response.data.data);
-        console.log(response.data.data);
-      });
-
-    } catch (error) {
-      console.log("getAllPlayers error: ", error);
-      alert("Unable to fetch players!");
-    }
-  }
-
-  const getAllTeams = async () => {
-    try {
-
-      await getTeams().then((response) => {
-        setTeams(response.data.data);
-        console.log(response.data.data);
-      });
-
-    } catch (error) {
-      console.log("getAllPlayers error: ", error);
-      alert("Unable to fetch teams!")
-    }
-  }
-
   const clickedStartBtn = () => {
-
-    const playersCount = players.length;
-
     if (!window.navigator.onLine) {
-      alert('Abe internet chala gya!');
+      alert("Internet connection lost!");
+    } else if (players.length === 0) {
+      alert("No more players available.");
+    } else if (window.confirm("Do you want to start the bidding?")) {
+      const randomIndex = Math.floor(Math.random() * players.length);
+      setPlayerIdx(randomIndex);
+      setSelectedPlayer(players[randomIndex]);
+      setBidValue(0);
+      setBidderName("Unsold");
+      setBiddingStarted(true);
+      const link = convertLink(players[randomIndex].profilepic);
+      console.log(link);
+
+      setSelectedPlayerImage(link);
+      console.log("Random index:", randomIndex);
     }
-    else if (playersCount === 0) {
-      alert("No more players");
-    }
-    else if (window.confirm('Do you want to start the bidding?')) {
+  };
 
-      playerIdx = Math.floor(Math.random() * playersCount); // generating random index 
-
-
-      console.log('Total players count : ', playersCount);
-      console.log('Random index: ', playerIdx);
-      const name = document.querySelectorAll('#player-name1')[0];
-      const name2 = document.getElementById("player-name2");
-      const year = document.querySelectorAll('#year')[0];
-      const dept = document.querySelectorAll('#dept')[0];
-      const speciality = document.querySelectorAll('#speciality')[0];
-      const wk = document.querySelectorAll('#wk')[0];
-      const playerImage = document.getElementById('player-image');
-
-      name.innerHTML = `${players[playerIdx].name}`;
-      name2.innerHTML = `${players[playerIdx].name}`;
-      year.innerHTML = `${players[playerIdx].year}`;
-      dept.innerHTML = `${players[playerIdx].dept}`;
-      speciality.innerHTML = `${players[playerIdx].speciality}`;
-      wk.innerHTML = `${players[playerIdx].wk}`;
-      playerImage.src = `${players[playerIdx].profilepic}`;
-      //console.log("Image url: "+players[playerIdx].profilePic);
-
-      biddingStarted = true;
-    }
+  const resetPage = ()=>{
+    setSelectedPlayer(null);
+    setSelectedPlayerImage(null);
   }
-
-
-  const bidValue = document.getElementById("bid-value");
-  const bidderName = document.getElementById("bidder-name");
-  const newBidValue = document.getElementById("new-bid-value");
-  const newBidderName = document.getElementById("new-bidder-name");
-  const loadingIcon = document.getElementById("loadingIcon");
-
   // on update button click
   //let bidderIndex=0;
   const bidButtonClick = () => {
+    if (!biddingStarted) {
+      alert("Start the bidding first!");
+      return;
+    }
 
     try {
-      const newBidVal = newBidValue.value;
-      const currIdx = parseInt(newBidderName.value);
+      const newBidAmount = parseInt(newBidValue);
+      const currIdx = parseInt(newBidderName);
       const tempBidderTeam = teams[currIdx];
-      const bidder = teamNames[currIdx];
 
-      const remainingPoint = maxPoint - parseInt(tempBidderTeam.pointsused);
-      const newPoint = parseInt(tempBidderTeam.pointsused) + parseInt(newBidVal);
-
-      if (newBidVal === '') {
-        alert('Bid Value Field Empty!')
-      }
-      else if (bidder === 'select') {
-        alert('Select the Bidder!')
-      }
-      else if (parseInt(newBidVal) < parseInt(bidValue.innerText)) {
-        alert("current bid value less than previous bid!");
-      }
-      else if (newPoint > maxPoint) {
-        alert("Not enough point!, Team only has " + remainingPoint + " point remaining.");
-      }
-      else {
-        bidValue.innerHTML = newBidVal;
-        bidderName.innerHTML = bidder;
-        newBidValue.value = "";
-        newBidderName.value = "select";
-        teamIdx = currIdx;
+      if (isNaN(newBidAmount)) {
+        alert("Bid Value Field is empty!");
+      } else if (currIdx === "select") {
+        alert("Select a Bidder!");
+      } else if (newBidAmount < bidValue) {
+        alert("Current bid value is less than the previous bid!");
+      } else if (newBidAmount > maxPoint - tempBidderTeam.pointsused) {
+        alert(
+          `Not enough points! Team only has ${
+            maxPoint - tempBidderTeam.pointsused
+          } points remaining.`
+        );
+      } else {
+        setBidValue(newBidAmount);
+        setBidderName(teamNames[currIdx]);
+        setNewBidValue("");
+        setNewBidderName("select");
       }
     } catch (error) {
-
-      alert('Player Data not fetched yet');
-      console.log('Error on update button click: ', error);
-
+      alert("Player data not loaded properly.");
+      console.error("Error on bid update:", error);
     }
-  } // end of update button functionality
+  }; // end of update button functionality
 
   // on rest button click
-  const resetBtnClick = () => {
+  const resetPointsBtnClick = () => {
     if (window.confirm("Are you sure you want to reset?")) {
-      bidValue.innerHTML = "0000";
-      bidderName.innerHTML = "Unsold";
-      newBidValue.value = "";
-      newBidderName.value = "select";
+      setBidValue(0);
+      setBidderName("Unsold");
+      setNewBidValue("");
+      setNewBidderName("select");
     }
-  } //end reset button functionality
-
+  }; //end reset button functionality
 
   const submitButtonClick = async () => {
+    if (!biddingStarted) {
+      alert("Start the bidding first!");
+      return;
+    }
 
     if (!window.navigator.onLine) {
-      alert('Abe internet chala gya!');
+      alert("Internet connection lost!");
+      return;
     }
-    else if (!biddingStarted) {
-      alert("Click on the start-bidding button to start the bidding!");
-    }
-    // else if(teamIdx < 0){
-    //   alert("Cant submit the bidding data!");
-    // }
-    else if (window.confirm("Are you sure you want to submit?")) {
 
-      loadingIcon.style.display = 'block';
+    if (window.confirm("Are you sure you want to submit?")) {
+      const pointsUsed = bidValue;
+      const playerDetails = {
+        ...selectedPlayer,
+        point: pointsUsed,
+        soldto: bidderName,
+      };
 
-      let newPlayervalue = {
-        name: '',
-        dept: '',
-        year: '',
-        speciality: '',
-        wk: '',
-        registered: '',
-        soldto: ''
-      }
-
-      const soldPlayerDetails = {
-        name: '',
-        dept: '',
-        year: '',
-        speciality: '',
-        wk: '',
-        point: 0,
-        contact: '',
-        email: '',
-      }
-
-      const pointsUsed = parseInt(bidValue.innerHTML);
-      soldPlayerDetails.id = players[playerIdx].id;
-      soldPlayerDetails.name = players[playerIdx].name;
-      soldPlayerDetails.dept = players[playerIdx].dept;
-      soldPlayerDetails.year = players[playerIdx].year;
-      soldPlayerDetails.speciality = players[playerIdx].speciality;
-      soldPlayerDetails.wk = players[playerIdx].wk;
-      soldPlayerDetails.point = parseInt(pointsUsed);
-      soldPlayerDetails.contact = players[playerIdx].contact;
-      soldPlayerDetails.email = players[playerIdx].email;
-
-      if (bidderName.innerText === 'Unsold') {
-
-        newPlayervalue = soldPlayerDetails;
-        newPlayervalue.soldto = 'unsold';
-
-        await addLogs(newPlayervalue).then((res) => {
-          console.log("logs updated!");
-        });
-
-        await editPlayer(newPlayervalue).then((res) => {
-          console.log("Player Sold: ", newPlayervalue);
-        });
-
-        alert(newPlayervalue.name + " unsold :(");
-        window.location.reload(false);
-
-      }
-      else {
-
-        try {
-
-          const newTeamValue = {
-            name: '',
-            pointsused: 0,
+      try {
+        setLoading(true);
+        if (bidderName === "Unsold") {
+          playerDetails.soldto = "unsold";
+          await addLogs(playerDetails);
+          await editPlayer(playerDetails);
+          alert(`${playerDetails.name} remained unsold.`);
+          window.location.reload();
+        } else {
+          const currTeam = teams.find((team) => team.name === bidderName);
+          if (currTeam) {
+            currTeam.pointsused += pointsUsed;
+            await editTeamPoints(currTeam);
+            await editTeamPlayerList(currTeam.name, playerDetails);
+            await addLogs(playerDetails);
+            await editPlayer(playerDetails);
+            setBidResultMessage(
+              `${playerDetails.name} got sold to ${currTeam.name} for ${pointsUsed} points.`
+            );
+            setShowBidResultModal(true);
           }
-
-
-          newTeamValue.name = teams[teamIdx].name;
-          newTeamValue.pointsused = teams[teamIdx].pointsused + pointsUsed;
-
-
-          await editTeamPoints(newTeamValue).then((res) => {
-            console.log("Team updated: ", newTeamValue);
-          });
-
-          await editTeamPlayerList(newTeamValue.name, soldPlayerDetails).then((res) => {
-            console.log(newTeamValue.name, " playerlist updated: ", soldPlayerDetails);
-          });
-
-
-          newPlayervalue = soldPlayerDetails;
-          newPlayervalue.soldto = newTeamValue.name;
-
-          await addLogs(newPlayervalue).then((res) => {
-            console.log("logs updated!");
-          });
-
-          await editPlayer(newPlayervalue).then((res) => {
-            console.log("Player Sold: ", newPlayervalue);
-          });
-
-          alert(newPlayervalue.name + " got sold to " + newTeamValue.name + " for " + pointsUsed);
-
-          window.location.reload(false);
-
-        } catch (error) {
-          loadingIcon.style.display = 'none';
-
-          alert("Unable to submit, Abe internet chala gya!")
-          console.log("Error in submitButtonClick: ", error);
         }
 
+        resetPage();
+        resetPointsBtnClick();
+
+      } catch (error) {
+        alert("Submission failed. Please check your connection.");
+        console.error("Error during submission:", error);
+      } finally {
+        setLoading(false);
       }
     }
-  }
+  };
 
   return (
-
-    <div style={{ backgroundColor: 'rgb(205, 224, 231)' }}>
-
-
+    <div className="relative" style={{ backgroundColor: "rgb(205, 224, 231)" }}>
       {/*Navbar */}
-      <nav className="mb-1 navbar navbar-expand " id="nav" style={{ backgroundColor: 'rgb(63, 94, 197)', color: 'white' }}>
-
-        <div className="collapse navbar-collapse" id="navbarSupportedContent-333">
+      <nav
+        className="mb-1 navbar navbar-expand "
+        id="nav"
+        style={{ backgroundColor: "rgb(63, 94, 197)", color: "white" }}
+      >
+        <div className="navbar-collapse" id="navbarSupportedContent-333">
           <ul className="navbar-nav mr-auto">
-            <li className="nav-item active" style={{ backgroundColor: 'rgb(63, 80, 190)' }}>
-              <button className="nav-link" id="start" onClick={() => clickedStartBtn()}
+            <li
+              className="nav-item active"
+              style={{ backgroundColor: "rgb(63, 80, 190)" }}
+            >
+              <button
+                className="nav-link"
+                id="start"
+                onClick={() => clickedStartBtn()}
                 style={{
-                  backgroundColor: 'rgb(40, 68, 156)', // Initial button color
-                  color: 'white', // Text color
-                  padding: '10px',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.3s', // Add a smooth transition effect
+                  backgroundColor: "rgb(40, 68, 156)", // Initial button color
+                  color: "white", // Text color
+                  padding: "10px",
+                  cursor: "pointer",
+                  transition: "background-color 0.3s", // Add a smooth transition effect
                 }}
-                onMouseOver={(e) => (e.target.style.backgroundColor = 'rgb(59, 99, 227)')} // Change color on hover
-                onMouseOut={(e) => (e.target.style.backgroundColor = 'rgb(40, 68, 156)')}
-              >Start Bidding
+                onMouseOver={(e) =>
+                  (e.target.style.backgroundColor = "rgb(59, 99, 227)")
+                } // Change color on hover
+                onMouseOut={(e) =>
+                  (e.target.style.backgroundColor = "rgb(40, 68, 156)")
+                }
+              >
+                Start Bidding
                 {/* <span class="sr-only">(current)</span>  */}
               </button>
             </li>
           </ul>
           <ul className="navbar-nav ml-auto nav-flex-icons">
             <li className="nav-item">
-              <div className="nav-link " id="navbarDropdownMenuLink-333" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+              <div
+                className="nav-link "
+                id="navbarDropdownMenuLink-333"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
                 style={{
-                  cursor: 'pointer'
-                }}>
-                <i className="fab fa-google-plus-g" id='onlineIcon'></i>
+                  cursor: "pointer",
+                }}
+              >
+                <i className="fab fa-google-plus-g" id="onlineIcon"></i>
               </div>
             </li>
           </ul>
@@ -319,116 +261,247 @@ const AllEligiblePlayers = () => {
       </nav>
       {/*/.Navbar */}
 
+      {/* Modal */}
+      {showBidResultModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+          style={{ zIndex: 1000 }}
+        >
+          <div className="bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 rounded-xl shadow-2xl p-6 w-full max-w-lg transform transition-all scale-100 opacity-100 animate-fadeIn">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowBidResultModal(false)}
+              className="absolute top-2 right-3 text-white hover:text-gray-200 text-4xl"
+            >
+              &times;
+            </button>
 
-      <div className="w3-content w3-margin-top w3-row-padding" style={{ maxWidth: '1400px' }}>
+            {/* Modal Header */}
+            <h2 className="text-3xl font-bold text-center text-white p-4">
+              Bid Result
+            </h2>
 
-        {/* Loader */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {loading &&
-            <ThreeDots
-              visible={true}
-              height="80"
-              width="80"
-              color="#4fa94d"
-              radius="9"
-              ariaLabel="three-dots-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-            />}
+            {/* Modal Content */}
+            <p className="text-xl text-center text-white p-4">
+              {bidResultMessage}
+            </p>
+
+            {/* Button to Close */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => setShowBidResultModal(false)}
+                className="bg-yellow-500 hover:bg-yellow-400 text-white font-semibold py-2 px-6 rounded-lg transition duration-200 ease-in-out transform hover:scale-105"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
+      )}
 
-        <div className="w3-row-padding" id="parent-div" style={{ marginTop: '40px' }}>
+      {/* Main content */}
+      {/* Loader */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {loading && (
+          <ThreeDots
+            visible={true}
+            height="80"
+            width="80"
+            color="#4fa94d"
+            radius="9"
+            ariaLabel="three-dots-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+          />
+        )}
+      </div>
 
+      <div className="flex items-center justify-center w-full">
+        <div className="flex justify-center space-x-5 mt-[40px]">
           {/* <div id="sold-div" style={{ display: 'none', padding: '100px' }}>
             <h2 id="sold-detail"><span id="sold-player-name">Player Name</span> sold to <span id="sold-player-team">teamname</span> by <span id="sold player bid">bid</span> points</h2>
             <button id="goto-next-bid">Go to Next Bid</button>
           </div> */}
 
           {/* Left Column */}
-          <div className="w3-third" id="left-column" style={{ width: '700px' }}>
-            <div className="w3-white w3-text-grey w3-card-4" id="left-column-1">
-              <div className="w3-display-container" id='img-container'>
-                <img className="center-cropped" src="default-player-image.jpg" style={{ width: '100%', height: '500px' }} alt="not found"
-                  onError={(event) => {
-                    event.target.src = 'default-player-image.jpg';
-                    event.onerror = null
-                  }} id="player-image" />
-                <div className="w3-display-bottomleft w3-container w3-text-black">
-                  {/* <h2 style={{color: 'aliceblue'}} id="player-name1">Player Name</h2> */}
-                  <h2 id="player-name1">Player Name</h2>
+          <div className="w-full sm:w-[700px]" id="left-column">
+            <div className="bg-white text-gray-700 w-full rounded-[2%] shadow-lg">
+              <div className="w-full relative rounded-[2%]">
+                <div className="h-[500px] overflow-auto rounded-[2%] no-scrollbar">
+                  <img
+                    className="object-cover w-full h-auto max-h-none max-w-none bg-no-repeat rounded-[2%]"
+                    src={selectedPlayerImage || "default-player-image.jpg"}
+                    alt="default-player-image.jpg"
+                    onError={(event) => {
+                      console.log("IMAGE ERROR");
+                      // setSelectedPlayerImage(null);
+                      event.onerror = null;
+                    }}
+                  />
+                </div>
+                <div className="absolute bottom-0 left-0 p-4 text-black bg-[rgba(215,232,250,0.771)] rounded-[2%]">
+                  <h2 className="text-2xl">
+                    {selectedPlayer?.name || "Player Name"}
+                  </h2>
                 </div>
               </div>
-              <div className="w3-container mt-3">
-                <h5><i className="fa fa-briefcase fa-fw w3-margin-right w3-large" /><b>Department: </b><span id="dept">XYZ</span></h5>
-                <h5><i className="fa fa-home fa-fw w3-margin-right w3-large" />
-                  <b>Year: </b><span id="year">000</span></h5>
-                <hr />
-                {/* <p className="w3-large"><b><i className="fa fa-asterisk fa-fw w3-margin-right" />Skills</b></p> */}
+
+              <div className="p-3 mt-3 space-y-2">
+                <h5 className="text-lg">
+                  <i className="fa fa-briefcase fa-fw mr-2 text-xl" />
+                  <b>Department: </b>
+                  <span>{selectedPlayer?.dept || "XYZ"}</span>
+                </h5>
+                <h5 className="text-lg">
+                  <i className="fa fa-home fa-fw mr-2 text-xl" />
+                  <b>Year: </b>
+                  <span>{selectedPlayer?.year || "000"}</span>
+                </h5>
+                <hr className="my-3 h-[3px] bg-[#fff312]" />
+
                 <div id="skill-div">
-                  <b><p className="skills " id="speciality"> Speciality </p></b>
+                  <b>
+                    <p className="flex items-center justify-center text-white bg-[#3f5ec5] text-lg px-4 py-2">
+                      {selectedPlayer?.speciality || "Speciality"}
+                    </p>
+                  </b>
                 </div>
-                <div id="skill-wk">
-                  <b><p className="mt-3 skills">Wicket Keeper: <span id='wk'></span></p></b>
+                <div className="bg-[#3f5ec5] text-white">
+                  <b>
+                    <p className="mt-3 flex items-center justify-center text-lg px-4 py-2">
+                      Wicket Keeper: <span>{selectedPlayer?.wk || "No"}</span>
+                    </p>
+                  </b>
                 </div>
-                <br />
               </div>
-            </div><br />
-            {/* End Left Column */}
+            </div>
           </div>
 
           {/* Right Column */}
-          <div className="w3-twothird" id="right-column">
-            <div className="w3-container w3-card w3-margin-bottom" id='right-column-1'>
-              <b id='right-column-player-name'>
-                <h2 className=" w3-padding-16 " id="player-name2" style={{ fontFamily: 'Signika Negative' }}>
-                  <i className="fa fa-user fa-fw w3-margin-right w3-xxlarge" />
-                  Player Name</h2>
+          <div className="w-2/3" id="right-column">
+            <div className="p-4 shadow-md mb-4 rounded-[2%] bg-white">
+              <b className="flex items-center flex-row justify-center bg-[rgba(215,232,250,0.771)] mt-4 rounded-[2%]">
+                <h2
+                  className="p-4 text-5xl font-cursive"
+                  id="player-name2"
+                  style={{ fontFamily: "Signika Negative" }}
+                >
+                  <i className="fa fa-user fa-fw mr-4 text-4xl" />
+                  Player Name
+                </h2>
               </b>
-              <hr />
-              <div className="w3-container">
-                <h3 className="w3-opacity currentBidHeader" style={{ fontFamily: 'Nunito' }}><b>CURRENT BID</b></h3>
-                <h1 className="bid-display" ><i className="fa fa-calendar fa-fw w3-margin-right" />
-                  <span className="w3-tag w3-round " id="bid-value">0000</span></h1>
-                <hr />
+              <hr className="my-3 h-[3px] bg-[#fff312]" />
+              <div>
+                <h3
+                  className="opacity-75 font-cursive text-2xl"
+                  style={{ fontFamily: "Nunito" }}
+                >
+                  <b>CURRENT BID</b>
+                </h3>
+                <h1 className="m-[20px] text-4xl">
+                  <i className="fa fa-calendar fa-fw mr-4" />
+                  <span className="p-1 rounded-md bg-[#040815] text-white">
+                    {bidValue || "0000"}
+                  </span>
+                </h1>
+                <hr className="my-3 h-[3px] bg-[#fff312]" />
               </div>
-              <div className="w3-container">
-                <h3 className="w3-opacity currentBidHeader" style={{ fontFamily: 'Nunito' }}><b>BIDDING TEAM</b></h3>
-                <h1 className=" bid-display"><i className="fa fa-calendar fa-fw w3-margin-right" />
-                  <b><span id="bidder-name">Unsold</span></b></h1>
-                <hr />
+              <div>
+                <h3
+                  className="opacity-75 font-cursive text-2xl"
+                  style={{ fontFamily: "Nunito" }}
+                >
+                  <b>BIDDING TEAM</b>
+                </h3>
+                <h1 className="m-[20px] text-4xl">
+                  <i className="fa fa-calendar fa-fw mr-4" />
+                  <b>
+                    <span id="bidder-name">{bidderName || "Unsold"}</span>
+                  </b>
+                </h1>
+                <hr className="my-3 h-[3px] bg-[#fff312]" />
               </div>
-              <div className="newbid-container">
-                <div className="newbid-div">
-                  <input className="new-bid mr-3" id="new-bid-value" type="number" placeholder="Bid Amount" aria-label="New Bid" style={{ width: '20%' }} />
-                  <select name="languages" id="new-bidder-name" style={{ padding: '8px' }}>
+              <div className="m-[20px] flex items-center justify-center">
+                <div className="flex items-center">
+                  <input
+                    className="mr-3 border rounded p-1 "
+                    id="new-bid-value"
+                    type="number"
+                    placeholder="Bid Amount"
+                    aria-label="New Bid"
+                    style={{ width: "20%" }}
+                    value={newBidValue}
+                    onChange={(e) => setNewBidValue(e.target.value)}
+                  />
+                  <select
+                    name="languages"
+                    style={{ padding: "8px" }}
+                    value={newBidderName}
+                    onChange={(e) => setNewBidderName(e.target.value)}
+                    className="border border-b-2"
+                  >
                     <option value="select">Select Bidder Name</option>
-                    <option value={0}>RR</option>
-                    <option value={1}>CSK</option>
-                    <option value={2}>KKR</option>
-                    <option value={3}>DC</option>
-                    <option value={4}>RCB</option>
-                    <option value={5}>SRH</option>
-                    <option value={6}>GT</option>
+                    {teams.map((team, index) => (
+                      <option key={team.name} value={index}>
+                        {team.name}
+                      </option>
+                    ))}
                   </select>
-                  <button id="bid-button" onClick={bidButtonClick} className="btn btn-outline-primary ml-5" type="button" data-mdb-ripple-color="dark" style={{ padding: '10px', paddingLeft: '20px', paddingRight: '20px' }}>
+                  <button
+                    onClick={bidButtonClick}
+                    className="px-4 py-2 border-2 border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white transition-colors duration-300 ml-5"
+                    style={{
+                      padding: "10px",
+                      paddingLeft: "20px",
+                      paddingRight: "20px",
+                    }}
+                  >
                     Update
                   </button>
                 </div>
               </div>
-              <div className="reset-container">
-                <img src="reset.png" onClick={resetBtnClick} alt="Avatar" id="reset" height={40} width={40} style={{ cursor: 'pointer' }} contextMenu="Reset" />
+              <div className="m-[10px] flex align-bottom justify-end">
+                <img
+                  src="reset.png"
+                  onClick={resetPointsBtnClick}
+                  alt="Avatar"
+                  id="reset"
+                  height={40}
+                  width={40}
+                  style={{ cursor: "pointer" }}
+                  contextMenu="Reset"
+                />
               </div>
             </div>
-            <div className="w3-twothird">
-              <button id="view-photo" onClick={() => {
-                window.open(`${players[playerIdx].profilepic}`, "_blank");
-              }} type="button" className="btn btn-rounded" style={{ backgroundColor: 'rgb(28, 77, 45)', color: 'white' }}>
+            <div className="w-2/3 p-2">
+              <button
+                onClick={() => {
+                  window.open(`${players[playerIdx].profilepic}`, "_blank");
+                }}
+                className="px-4 py-2 bg-green-900 text-white rounded shadow-lg shadow-black hover:bg-green-600 border-none"
+              >
                 View Image
               </button>
             </div>
 
-            <div className="w3-twothird">
-              <button id="submit" onClick={submitButtonClick} type="button" className="btn btn-rounded" style={{ backgroundColor: 'rgb(81, 9, 182)', color: 'white' }}><i className="fa fa-spinner fa-spin" id='loadingIcon' style={{ display: 'none' }}></i> Submit</button>
+            <div className="w-2/3 mt-2 p-2">
+              <button
+                onClick={submitButtonClick}
+                className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-600 border-none outline-none"
+              >
+                <i
+                  className="fa fa-spinner fa-spin"
+                  id="loadingIcon"
+                  style={{ display: "none" }}
+                ></i>{" "}
+                Submit
+              </button>
             </div>
 
             {/* End Right Column */}
@@ -436,12 +509,26 @@ const AllEligiblePlayers = () => {
         </div>
       </div>
 
-      <footer className="w3-container w3-center w3-margin-top" id="footer" style={{ backgroundColor: 'rgb(63, 94, 197)' }}>
+      <footer
+        className="p-4 text-center mt-4"
+        id="footer"
+        style={{ backgroundColor: "rgb(63, 94, 197)" }}
+      >
         <p>MEGHNAD SAHA CRICKET LEAGUE</p>
-        <p>Powered by <a href="https://www.instagram.com/mcl_msit/" target="_blank" id="footer-link" rel="noreferrer" >MCL</a></p>
+        <p>
+          Powered by{" "}
+          <a
+            href="https://www.instagram.com/mcl_msit/"
+            target="_blank"
+            className="text-[#3ffcF2]"
+            rel="noreferrer"
+          >
+            MCL
+          </a>
+        </p>
       </footer>
     </div>
   );
-}
+};
 
 export default AllEligiblePlayers;
